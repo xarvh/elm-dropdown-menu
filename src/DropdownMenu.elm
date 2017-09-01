@@ -4,6 +4,7 @@ module DropdownMenu
         , defaultCommonFeatures
         , Classes
         , defaultClasses
+        , itemToHtml
         , Config
         , Setters
         , OpenState
@@ -180,6 +181,13 @@ defaultClasses =
     , menuOptionSelected = namespace "menuOptionSelected"
     , menuOptionHighlighted = namespace "menuOptionHighlighted"
     }
+
+
+itemToHtml : (item -> String) -> Bool -> Bool -> item -> Html msg
+itemToHtml itemToLabel isSelected isHighlighted item =
+    item
+        |> itemToLabel
+        |> Html.text
 
 
 
