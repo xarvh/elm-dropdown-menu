@@ -5,16 +5,43 @@ module DropdownMenu
         , Classes
         , defaultClasses
         , itemToHtml
+          --
         , Config
-        , Setters
+          --
         , OpenState
-        , Msg
         , open
+        , Msg
         , update
+        , Setters
         , view
         )
 
-{-| This module is candidate to packaging, and should be maintained as generic as possible
+{-| A production-grade dropdown menu.
+
+If you need internal scrolling, you will need to wire in a [port](https://github.com/xarvh/elm-dropdown-menu/tree/master/ports),
+check the [examples](https://github.com/xarvh/elm-dropdown-menu/tree/master/examples)
+to see how it is done.
+
+The API is designed to minimise the boiler plate necessary to use dropdown menus.
+
+We rewrote the whole module several times and every time we ended up with the
+same boilerplate and roughly the same way to abstract it away.
+
+
+# Common Features
+
+@docs CommonFeatures, defaultCommonFeatures, Classes, defaultClasses, itemToHtml
+
+
+# Config
+
+@docs Config
+
+
+# The Elm Architecture
+
+@docs OpenState, open, Msg, update, Setters, view
+
 -}
 
 import Char
@@ -32,6 +59,12 @@ import Time
 -- Exposed (API) types
 
 
+{-| This record describes the stuff that should be the same all over the app.
+
+`scrollIntoView` is required only if you need internal scrolling: you should
+set it to the port provided in [ports/](https://github.com/xarvh/elm-dropdown-menu/tree/master/ports).
+
+-}
 type alias CommonFeatures =
     { downArrow : Html Never
     , clearButton : Html Never
@@ -40,6 +73,8 @@ type alias CommonFeatures =
     }
 
 
+{-| These are the CSS class names that will be used for the dropdown menu elements.
+-}
 type alias Classes =
     { root : String
     , isOpen : String
@@ -61,6 +96,36 @@ type alias Classes =
     }
 
 
+{-| This record holds the configuration for a specific dropdown menu.
+
+The `model` and the `msg` types refer to the [Elm Architecture](https://guide.elm-lang.org/architecture/)
+`Model` and `Msg` of the *parent*, ie the types used by the `update` function
+that will call `DropdownMenu.update`.
+
+`item` is just the type of the items that will appear in the menu.
+
+The record fields are:
+
+  - `hasClearButton` if set to True, will add a Clear icon that, when clicked, will set the selected item to `Nothing`.
+
+  - `itemToHtml` is a function to render a menu item into Html.
+    The first two arguments state whether the item is currently selected and highlighted, respectively.
+
+  - `itemToId` This string is used for comparisons and as DOM id when scrolling.
+
+  - `itemToLabel` This string is used for matching the item against character searches.
+
+  - `modelToItems` Returns the list of items to be shown in the menu.
+
+  - `modelToMaybeOpenState` Returns `Nothing` when the menu is closed, or `Just` the `OpenState` if it is open.
+
+  - `modelToMaybeSelection` Returns the currently selected `item`.
+
+  - `msgWrapper` Transforms a `DropdownMenu.Msg` into a parent `msg`.
+
+  - `placeholder` is shown whenever the current selection is `Nothing`.
+
+-}
 type alias Config model item msg =
     { hasClearButton : Bool
     , itemToHtml : Bool -> Bool -> item -> Html Never
@@ -74,6 +139,11 @@ type alias Config model item msg =
     }
 
 
+{-| This type is just a nicer way to declare the arguments for `DropdownMenu.update`.
+
+All these functions modify the parent `model`.
+
+-}
 type alias Setters model item msg =
     { closeAllDropdowns : model -> model
     , openOnlyThisDropdown : OpenState -> model -> ( model, Cmd msg )
@@ -81,16 +151,21 @@ type alias Setters model item msg =
     }
 
 
-type OpenOrClosed
-    = Closed
-    | Open (Maybe OpenState)
-
-
 type Outcome item
     = CloseAndSelect (Maybe item)
     | OpenWithState OpenState
 
 
+{-| You can think of this as the [Elm Architecture](https://guide.elm-lang.org/architecture/)
+`Model` for the dropdown menu, with the difference that it is only needed when
+the menu is open.
+
+Also, since you really want to have only a single dropdown menu open at any
+given time, you should structure your `Model` so that at most one `OpenState`
+can exist at any given time.
+Check the [examples](https://github.com/xarvh/elm-dropdown-menu/tree/master/examples) to see how this is done.
+
+-}
 type OpenState
     = OpenState PrivateOpenState
 
@@ -119,6 +194,7 @@ type Key
     | Searchable Char
 
 
+{-| -}
 type Msg
     = NoOp
     | OnKey Key
@@ -143,6 +219,9 @@ openModel =
     }
 
 
+{-| Normally dropdown menus are initialised as closed and open only on user
+input, but if for any reason your code needs to open the menu, you can use this.
+-}
 open : OpenState
 open =
     OpenState openModel
@@ -152,6 +231,7 @@ namespace s =
     "ElmDropdownMenu-" ++ s
 
 
+{-| -}
 defaultCommonFeatures : CommonFeatures
 defaultCommonFeatures =
     { downArrow = text "▼"
@@ -161,6 +241,7 @@ defaultCommonFeatures =
     }
 
 
+{-| -}
 defaultClasses : Classes
 defaultClasses =
     { root = namespace "root"
@@ -183,6 +264,17 @@ defaultClasses =
     }
 
 
+{-| In most cases where you declare a `Config`'s `itemToHtml` field you don't
+really care about the `isSelected` and `isHighlighted` arguments, so you
+can use this convenience function to keep your config declaration cleaner.
+
+    myConfig =
+        { ...
+        , itemToHtml = DropdownMenu.itemToHtml .name
+        ...
+        }
+
+-}
 itemToHtml : (item -> String) -> Bool -> Bool -> item -> Html msg
 itemToHtml itemToLabel isSelected isHighlighted item =
     item
@@ -505,6 +597,7 @@ updatePartial config model msg =
 -- Update
 
 
+{-| -}
 update : CommonFeatures -> Config model item msg -> Setters model item msg -> Msg -> model -> ( model, Cmd msg )
 update commonFeatures config setters msg model =
     let
@@ -692,6 +785,8 @@ viewSelection commonFeatures config model =
             ]
 
 
+{-| Setting the third argument to True will disable the dropdown.
+-}
 view : CommonFeatures -> Config model item msg -> Bool -> model -> Html msg
 view commonFeatures config isDisabled model =
     if isDisabled then

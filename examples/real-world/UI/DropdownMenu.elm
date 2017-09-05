@@ -44,11 +44,8 @@ commonFeatures =
     }
 
 
-itemToHtml : (item -> String) -> Bool -> Bool -> item -> Html msg
-itemToHtml itemToLabel isSelected isHighlighted item =
-    item
-        |> itemToLabel
-        |> Html.text
+itemToHtml =
+    DropdownMenu.itemToHtml
 
 
 

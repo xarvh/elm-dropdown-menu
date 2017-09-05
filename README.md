@@ -1,14 +1,27 @@
+This package is a work in progress, and is published with the goal to
+facilitate discussion.
+
+While the package is perfectly usable, there is an unresolved issue related
+to transitions and internal scrolling, and the examples and the docs are
+incomplete.
+
+
 elm-dropdown-menu
 =================
 
 This is the dropdown menu we use in production at [Stax](http://stax.io).
 
+* Full keyboard support: alphanumberic blind search, Esc, Enter, Space, Up, Down, Page Up, Page Down, Home, End
+* Fully stylable, default CSS class names are provided and can be overridden
+* Internal scrolling with `max-height` and `overflow-y: scroll`
+* Optional Clear button
+* Placeholder
+
 You can see the dropdown menu in action [here]().
 
 The package works really well for our specific use case, but looks a bit
-jerky when it comes to dropdowns that have both an menu opening/closing
+jerky when it comes to dropdowns that both have a menu opening/closing
 transition and allow the menu to vertically scroll.
-
 
 The issue
 =========
