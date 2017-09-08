@@ -10,7 +10,31 @@ import UI.DropdownMenu
 
 templates : Nonempty Form.Template
 templates =
-    [ { id = "pizza"
+    [ { id = "fruit"
+      , name = "Fruit"
+      , parameters =
+            [ { id = "variety"
+              , label = "Type"
+              , options =
+                    [ { id = "f-0", label = "Orange" }
+                    , { id = "f-1", label = "Pear" }
+                    , { id = "f-2", label = "Apple" }
+                    , { id = "f-3", label = "Prune" }
+                    , { id = "f-4", label = "Pineapple" }
+                    , { id = "f-5", label = "Peach" }
+                    , { id = "f-6", label = "Apricot" }
+                    , { id = "f-7", label = "Grape" }
+                    , { id = "f-8", label = "Mandarin" }
+                    , { id = "f-9", label = "Banana" }
+                    , { id = "f-10", label = "Melon" }
+                    , { id = "f-11", label = "Watermelon" }
+                    ]
+                        |> toNonEmpty
+              }
+            ]
+                |> Array.fromList
+      }
+    , { id = "pizza"
       , name = "Pizza"
       , parameters =
             [ { id = "hasTomato"
@@ -28,21 +52,6 @@ templates =
                     [ { id = "mozzarella-0", label = "Yes" }
                     , { id = "mozzarella-1", label = "No" }
                     , { id = "mozzarella-2", label = "Bufala" }
-                    ]
-                        |> toNonEmpty
-              }
-            ]
-                |> Array.fromList
-      }
-    , { id = "fruit"
-      , name = "Fruit"
-      , parameters =
-            [ { id = "variety"
-              , label = "Type"
-              , options =
-                    [ { id = "f-0", label = "Orange" }
-                    , { id = "f-1", label = "Pear" }
-                    , { id = "f-2", label = "Peach" }
                     ]
                         |> toNonEmpty
               }

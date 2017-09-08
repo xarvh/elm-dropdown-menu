@@ -64,7 +64,10 @@ stylesheet =
             property "transition-timing-function" "ease"
 
         duration =
-            property "transition-duration" "100ms"
+            -- 100ms is the correct value, but 600ms will make it easier
+            -- to explain and debug the transition issue.
+            -- TODO restore 100ms once the issue is resolved
+            property "transition-duration" "600ms"
 
         cssSelect p1 p2 rules =
             class p1
@@ -104,6 +107,7 @@ stylesheet =
             [ outline none
             , hover [ descendants [ class css.selectBox [ standardInputBorderOnHover ] ] ]
             , focus [ descendants [ class css.selectBox [ standardInputBorderOnHover ] ] ]
+            , width (rem 32)
             ]
         , class css.isDisabled
             [ hover [ descendants [ class css.selectBox [ standardInputBorder ] ] ]
@@ -189,7 +193,7 @@ stylesheet =
             , boxShadow4 (px 0) (px 2) (px 4) (rgba 48 48 55 0.1)
             , padding zero
             , zIndex (int 1)
-            , maxHeight (px 300)
+            , maxHeight (px 200)
             , overflowY auto
             ]
         , class css.menuOption

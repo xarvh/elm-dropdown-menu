@@ -2,7 +2,7 @@ function registerDropdownMenuScrollPort(elmApp) {
   elmApp.ports.dropdownMenuScroll.subscribe(scrollIntoView)
 
 
-  function scrollIntoView(elementId: string) {
+  function scrollIntoView(elementId) {
 
     const element = document.getElementById(elementId)
     const parentElement = element && element.parentElement
