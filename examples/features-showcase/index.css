@@ -1,0 +1,128 @@
+.ElmDropdownMenu-root {
+    outline: none;
+    width: 32rem;
+}
+
+.ElmDropdownMenu-root:hover  .ElmDropdownMenu-selectBox {
+    border: 1px solid #00cccf;
+}
+
+.ElmDropdownMenu-root:focus  .ElmDropdownMenu-selectBox {
+    border: 1px solid #00cccf;
+}
+
+.ElmDropdownMenu-isDisabled {
+    background-color: #f3f3f4;
+}
+
+.ElmDropdownMenu-isDisabled:hover  .ElmDropdownMenu-selectBox {
+    border: 1px solid #e0e0e0;
+}
+
+.ElmDropdownMenu-isDisabled:focus  .ElmDropdownMenu-selectBox {
+    border: 1px solid #e0e0e0;
+}
+
+.ElmDropdownMenu-isClosed  .ElmDropdownMenu-menu {
+    transform: translate(0, -50%) scale(1, 0) translate(0, 50%);
+    transition: transform;
+    transition-duration: 100ms;
+    transition-timing-function: ease;
+}
+
+.ElmDropdownMenu-isOpen  .ElmDropdownMenu-menu {
+    transform: translate(0, -50%) scale(1, 1) translate(0, 50%);
+    transition-properties: transform;
+    transition-duration: 100ms;
+    transition-timing-function: ease;
+}
+
+.ElmDropdownMenu-isClosed  .ElmDropdownMenu-downArrow  svg {
+    fill: #b1b1b1;
+    transition-properties: fill, transform;
+    transition-duration: 100ms;
+    transition-timing-function: ease;
+}
+
+.ElmDropdownMenu-isOpen  .ElmDropdownMenu-downArrow  svg {
+    fill: #202027;
+    transform: rotate(180deg);
+    transition-properties: fill, transform;
+    transition-duration: 100ms;
+    transition-timing-function: ease;
+}
+
+.ElmDropdownMenu-selectBox {
+    border: 1px solid #e0e0e0;
+    font-size: 13px;
+    height: 2rem;
+    box-sizing: border-box;
+    padding: 0 0.5rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.ElmDropdownMenu-selectBox:focus {
+    outline: none;
+}
+
+.ElmDropdownMenu-isDisabled  .ElmDropdownMenu-selectBox {
+    cursor: auto;
+}
+
+.ElmDropdownMenu-selection {
+    flex-grow: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ElmDropdownMenu-placeholder {
+    color: #b1b1b1;
+    flex-grow: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ElmDropdownMenu-clearButton {
+    margin-right: 0.25rem;
+    fill: #b1b1b1;
+    line-height: 0;
+}
+
+.ElmDropdownMenu-clearButton:hover {
+    fill: #fff;
+}
+
+.ElmDropdownMenu-menu {
+    background-color: #fff;
+    list-style-type: none;
+    margin: 0;
+    width: 100%;
+    box-shadow: 0px 2px 4px rgba(48, 48, 55, 0.1);
+    padding: 0;
+    z-index: 1;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.ElmDropdownMenu-menuOption {
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.ElmDropdownMenu-menuOption .tickContainer {
+  display: inline-block;
+  width: 1rem;
+  text-align: center;
+}
+
+.ElmDropdownMenu-menuOptionSelected {
+    font-weight: bold;
+}
+
+.ElmDropdownMenu-menuOptionHighlighted {
+    background-color: #f3f3f4;
+}
