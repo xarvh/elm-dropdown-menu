@@ -1,7 +1,7 @@
 module Main exposing (..)
 
-import Css
 import Html exposing (..)
+import Html.Attributes exposing (class)
 import DropdownMenu exposing (defaultCommonFeatures, OpenState)
 import DropdownMenuScroll
 
@@ -100,7 +100,7 @@ selectionToMenuId selection =
             MenuNumbers
 
 
-mainConfig =
+mainMenuConfig =
     let
         items =
             [ MenuTicked
@@ -110,15 +110,15 @@ mainConfig =
         itemToLabel item =
             case item of
                 MenuTicked ->
-                    "MenuTicked"
+                    "Vegetables (selected veggie will have a checkmark)"
 
                 MenuNumbers ->
-                    "MenuNumbers"
+                    "Numbers"
 
                 _ ->
                     ""
     in
-        { hasClearButton = False
+        { hasClearButton = True
         , itemToHtml = DropdownMenu.itemToHtml itemToLabel
         , itemToId = itemToLabel
         , itemToLabel = itemToLabel
@@ -134,10 +134,123 @@ mainConfig =
 -- Ticked menu
 
 
+vegetables =
+    [ "Jalapeño"
+    , "Corn salad"
+    , "Green beans"
+    , "Bok choy"
+    , "Squash"
+    , "Maize"
+    , "Onion"
+    , "Paprika"
+    , "Arugula"
+    , "Horseradish"
+    , "Frisee"
+    , "Turnip"
+    , "Basil"
+    , "Rosemary"
+    , "Okra"
+    , "Rhubarb"
+    , "Sage"
+    , "Turnip"
+    , "Split peas"
+    , "Kohlrabi"
+    , "Daikon"
+    , "Runner beans"
+    , "Spinach"
+    , "Jicama"
+    , "Ginger"
+    , "Endive"
+    , "Chives"
+    , "Kale"
+    , "Soy beans"
+    , "Fennel"
+    , "Thyme"
+    , "Courgette"
+    , "Chard"
+    , "Chickpeas"
+    , "Nettles"
+    , "Taro"
+    , "Carrots"
+    , "Wasabi"
+    , "Skirret"
+    , "Garlic"
+    , "Rutabaga"
+    , "Collard greens"
+    , "Lettuce"
+    , "Mung beans"
+    , "Dill"
+    , "Black-eyed peas"
+    , "Tomato"
+    , "Radicchio"
+    , "Oregano"
+    , "Pumpkin"
+    , "Caraway"
+    , "Calabrese"
+    , "Mustard greens"
+    , "Marjoram"
+    , "Asparagus"
+    , "White radish"
+    , "Leek"
+    , "Sweet potato"
+    , "Celeriac"
+    , "Peas"
+    , "Potato"
+    , "Artichoke"
+    , "Pinto beans"
+    , "Navy beans"
+    , "Parsley"
+    , "Anise"
+    , "Lavender"
+    , "Sunchokes"
+    , "Borlotti bean"
+    , "Beetroot"
+    , "Cabbage"
+    , "Shallot"
+    , "Tat soi"
+    , "Broccoli"
+    , "Lemon Grass"
+    , "Lima beans"
+    , "Delicata"
+    , "Fennel"
+    , "Parsley"
+    , "Cayenne pepper"
+    , "Zucchini"
+    , "Coriander"
+    , "Parsnip"
+    , "Celery"
+    , "Lentils"
+    , "Cauliflower"
+    , "Habanero"
+    , "Chamomile"
+    , "Black beans"
+    , "Tabasco pepper"
+    , "Kidney beans"
+    , "Carrot"
+    , "Watercress"
+    , "Cucumber"
+    , "Water chestnut"
+    ]
+
+
 tickedMenuConfig =
     let
-        items =
-            [ "a", "b", "c", "d" ]
+        tick isSelected =
+            if isSelected then
+                "✔"
+            else
+                ""
+
+        itemToHtml isSelected isHighlighted item =
+            span
+                []
+                [ span
+                    [ class "tickContainer" ]
+                    [ isSelected |> tick |> text ]
+                , span
+                    []
+                    [ text item ]
+                ]
 
         modelToMaybeSelection model =
             case model.maybeSelectedMenu of
@@ -148,10 +261,10 @@ tickedMenuConfig =
                     Nothing
     in
         { hasClearButton = False
-        , itemToHtml = DropdownMenu.itemToHtml identity
+        , itemToHtml = itemToHtml
         , itemToId = identity
         , itemToLabel = identity
-        , modelToItems = always items
+        , modelToItems = always (List.sort vegetables)
         , modelToMaybeOpenState = maybeOpenState MenuTicked
         , modelToMaybeSelection = modelToMaybeSelection
         , msgWrapper = DropdownMenuMsg MenuTicked
@@ -176,7 +289,7 @@ numbersMenuConfig =
                 _ ->
                     Nothing
     in
-        { hasClearButton = False
+        { hasClearButton = True
         , itemToHtml = DropdownMenu.itemToHtml toString
         , itemToId = toString
         , itemToLabel = toString
@@ -220,7 +333,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( msg, model.maybeSelectedMenu ) of
         ( DropdownMenuMsg MenuMain nestedMsg, _ ) ->
-            dropdownUpdate mainConfig
+            dropdownUpdate mainMenuConfig
                 { closeAllDropdowns = closeAllDropdowns
                 , openOnlyThisDropdown = openDropdown MenuMain
                 , setCurrentSelection = selectMenu
@@ -254,10 +367,36 @@ update msg model =
 -- View
 
 
+view : Model -> Html Msg
 view model =
     div
         []
-        []
+        [ DropdownMenu.view commonFeatures mainMenuConfig False model
+        , hr [] []
+        , case model.maybeSelectedMenu of
+            Nothing ->
+                text ""
+
+            Just (SelectedMenuTicked maybeTicked) ->
+                div
+                    []
+                    [ maybeTicked
+                        |> Maybe.map (\t -> "Ticked menu selection is: " ++ t)
+                        |> Maybe.withDefault ""
+                        |> text
+                    , DropdownMenu.view commonFeatures tickedMenuConfig False model
+                    ]
+
+            Just (SelectedMenuNumbers maybeN) ->
+                div
+                    []
+                    [ maybeN
+                        |> Maybe.map (\n -> "The number you have selected is: " ++ toString n)
+                        |> Maybe.withDefault ""
+                        |> text
+                    , DropdownMenu.view commonFeatures numbersMenuConfig False model
+                    ]
+        ]
 
 
 main =

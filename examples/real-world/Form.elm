@@ -133,7 +133,7 @@ selectTemplate maybeTemplate model =
 defaultParameterOptions : Template -> Array ParameterOption
 defaultParameterOptions template =
     template.parameters
-        |> Array.map (.options >> List.Nonempty.head)
+        |> Array.map (.options >> List.Nonempty.reverse >> List.Nonempty.head)
 
 
 
@@ -149,6 +149,7 @@ parameterDropdownConfig parameterIndex =
                 |> Array.get parameterIndex
                 |> Maybe.map (.options >> List.Nonempty.toList)
                 |> Maybe.withDefault []
+                |> List.sortBy .label
     in
         { hasClearButton = False
         , itemToHtml = UI.DropdownMenu.itemToHtml .label

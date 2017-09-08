@@ -46,7 +46,7 @@ Usage
 
 ```elm
 import DropdownMenu
-import Html
+import Html exposing (Html, div)
 
 
 type Msg
@@ -60,39 +60,48 @@ type alias Fruit =
 
 
 type alias Model =
-    { fruits : List Fruit
+    { availableFruits : List Fruit
+
+    -- This is the dropdown menu "Model"
+    -- It is needed only when the menu is open
     , maybeFruitDropdown : Maybe DropdownMenu.OpenState
+
+    -- This is what the dropdown should modify
     , maybeSelectedFruit : Maybe Fruit
     }
 
 
+fruitDropdownConfig : DropdownMenu.Config Model Fruit Msg
 fruitDropdownConfig =
-    { hasClearButton = False
-    , itemToHtml = \isSelected isHighlighted fruit -> Html.text fruit.name
-    , itemToId = .id
-    , itemToLabel = .name
-    , modelToItems = .fruitList
-    , modelToMaybeOpenState = .maybeFruitDropdown
-    , modelToMaybeSelection = .maybeSelectedFruit
-    , msgWrapper = FruitDropdownMsg
-    , placeholder = Html.text "Select your favourite fruit"
-    }
+    DropdownMenu.simpleConfig
+        { itemToLabel = .name
+        , modelToItems = .availableFruits
+        , modelToMaybeOpenState = .maybeFruitDropdown
+        , modelToMaybeSelection = .maybeSelectedFruit
+        , msgWrapper = FruitDropdownMsg
+        , placeholder = "What fruit do you want?"
+        }
 
 
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         FruitDropdownMsg nestedMsg ->
             DropdownMenu.update
                 DropdownMenu.defaultCommonFeatures
+                fruitDropdownConfig
                 { closeAllDropdowns = \model -> { model | maybeFruitDropdown = Nothing }
                 , openOnlyThisDropdown = \openState model -> ( { model | maybeFruitDropdown = Just openState }, Cmd.none )
                 , setCurrentSelection = \maybeFruit model -> ( { model | maybeSelectedFruit = maybeFruit }, Cmd.none )
                 }
-                fruitDropdownConfig
                 nestedMsg
                 model
 
 
+view : Model -> Html Msg
 view model =
-    DropdownMenu.viewEnabled DropdownMenu.defaultCommonFeatures fruitDropdownConfig model
+    div
+        []
+        [ DropdownMenu.view DropdownMenu.defaultCommonFeatures fruitDropdownConfig False model
+        ]
 ```

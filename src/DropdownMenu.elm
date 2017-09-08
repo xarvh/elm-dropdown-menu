@@ -7,6 +7,7 @@ module DropdownMenu
         , itemToHtml
           --
         , Config
+        , simpleConfig
           --
         , OpenState
         , open
@@ -279,7 +280,30 @@ itemToHtml : (item -> String) -> Bool -> Bool -> item -> Html msg
 itemToHtml itemToLabel isSelected isHighlighted item =
     item
         |> itemToLabel
-        |> Html.text
+        |> text
+
+
+{-| -}
+simpleConfig :
+    { itemToLabel : item -> String
+    , modelToItems : model -> List item
+    , modelToMaybeOpenState : model -> Maybe OpenState
+    , modelToMaybeSelection : model -> Maybe item
+    , msgWrapper : Msg -> msg
+    , placeholder : String
+    }
+    -> Config model item msg
+simpleConfig args =
+    { hasClearButton = False
+    , itemToHtml = itemToHtml args.itemToLabel
+    , itemToId = args.itemToLabel
+    , itemToLabel = args.itemToLabel
+    , modelToItems = args.modelToItems
+    , modelToMaybeOpenState = args.modelToMaybeOpenState
+    , modelToMaybeSelection = args.modelToMaybeSelection
+    , msgWrapper = args.msgWrapper
+    , placeholder = text args.placeholder
+    }
 
 
 
